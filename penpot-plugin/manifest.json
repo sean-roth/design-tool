@@ -1,0 +1,12 @@
+{
+  "name": "AI Design Bridge",
+  "description": "Enables Claude AI agents to collaborate on PenPot designs through natural conversation",
+  "code": "plugin.js",
+  "icon": "icon.png",
+  "permissions": [
+    "content:read",
+    "content:write",
+    "library:read",
+    "library:write"
+  ]
+}

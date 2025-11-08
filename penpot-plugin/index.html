@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Design Bridge</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .container {
+      max-width: 100%;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #FF5733;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #2e3434;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px 15px;
+      margin: 5px 0;
+      border: none;
+      background: #FF5733;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #E04623;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    #status {
+      margin-top: 15px;
+      padding: 12px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      max-height: 200px;
+      overflow-y: auto;
+      color: #2e3434;
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .info {
+      font-size: 11px;
+      color: #666;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #FF5733;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Design Bridge <span class="badge">v1.0</span></h1>
+    <p class="subtitle">Claude AI agents can now design in PenPot</p>
+
+    <div class="section">
+      <h2>🧪 Test Operations</h2>
+      <button onclick="testCreateButton()">Create Button</button>
+      <button onclick="testCreateText()">Create Text</button>
+      <button onclick="testCreateBoard()">Create Board</button>
+      <button onclick="testGetState()">Get Design State</button>
+    </div>
+
+    <div class="section">
+      <h2>📊 Status</h2>
+      <div id="status">Ready - Waiting for commands...</div>
+    </div>
+
+    <div class="info">
+      <strong>MCP Server:</strong> http://localhost:3000<br>
+      <strong>Plugin:</strong> Listening for commands from Claude agents
+    </div>
+  </div>
+
+  <script>
+    let statusEl = document.getElementById('status');
+
+    function setStatus(message, type = 'info') {
+      statusEl.textContent = message;
+      statusEl.className = '';
+      if (type === 'success') statusEl.classList.add('status-success');
+      if (type === 'error') statusEl.classList.add('status-error');
+    }
+
+    function testCreateButton() {
+      setStatus('Creating button...');
+
+      window.parent.postMessage({
+        pluginMessage: {
+          operation: 'createRectangle',
+          properties: {
+            name: 'Test Button',
+            width: 200,
+            height: 50,
+            fills: [{fillColor: '#FF5733'}],
+            borderRadius: 8
+          }
+        }
+      }, '*');
+    }
+
+    function testCreateText() {
+      setStatus('Creating text...');
+
+      window.parent.postMessage({
+        pluginMessage: {
+          operation: 'createText',
+          properties: {
+            name: 'Test Text',
+            text: 'Hello from AI!',
+            fontSize: 24,
+            fills: [{fillColor: '#2e3434'}]
+          }
+        }
+      }, '*');
+    }
+
+    function testCreateBoard() {
+      setStatus('Creating board...');
+
+      window.parent.postMessage({
+        pluginMessage: {
+          operation: 'createBoard',
+          properties: {
+            name: 'AI Design Board',
+            width: 1920,
+            height: 1080,
+            fills: [{fillColor: '#f5f5f5'}]
+          }
+        }
+      }, '*');
+    }
+
+    function testGetState() {
+      setStatus('Getting design state...');
+
+      window.parent.postMessage({
+        pluginMessage: {
+          operation: 'getState'
+        }
+      }, '*');
+    }
+
+    // Listen for results from plugin
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'commandResult') {
+        const result = event.data.result;
+        if (result.success) {
+          const message = JSON.stringify(result.data || result, null, 2);
+          setStatus('Success:\n' + message, 'success');
+        } else {
+          setStatus('Error: ' + result.error, 'error');
+        }
+      }
+    });
+
+    // Notify plugin we're ready
+    console.log('UI ready for commands');
+  </script>
+</body>
+</html>
