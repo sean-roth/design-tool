@@ -1,0 +1,16 @@
+{
+  "compel-english": {
+    "brand_colors": {
+      "primary": "#FF5733",
+      "secondary": "#2e3434",
+      "accent": "#FFC300"
+    },
+    "typography": {
+      "heading": "Inter",
+      "body": "Open Sans"
+    },
+    "spacing": {
+      "unit": 8
+    }
+  }
+}

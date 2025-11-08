@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    build: .
+    container_name: mcp-server
+    ports:
+      - "3000:3000"
+    environment:
+      - PENPOT__URL=http://192.168.1.205:9001
+    volumes:
+      - ./logs:/app/logs
+      - ./projects.json:/app/projects.json
+    restart: unless-stopped
+    networks:
+      - penpot
+
+networks:
+  penpot:
+    external: true
